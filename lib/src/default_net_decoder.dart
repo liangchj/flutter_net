@@ -12,20 +12,19 @@ class DefaultNetDecoder extends NetDecoder {
   factory DefaultNetDecoder.getInstance() => _instance;
 
   @override
-  K decode<T, K>({required Response<dynamic> response, T? decodeType}) {
-    if (decodeType is BaseNetModel) {
+  K decode<T, K>({required Response<dynamic> response, T? Function(dynamic)? fromJsonFun}) {
+    if (fromJsonFun == null) {
+      return response.data as K;
+    } else {
       if (response.data is List) {
         var list = response.data as List;
         var dataList =
-            List<T>.from(list.map((item) => decodeType.fromJson(item)).toList())
-                as K;
+        List<T>.from(list.map((item) => fromJsonFun(item)).toList()) as K;
         return dataList;
-      } else {
-        var data = decodeType.fromJson(response.data) as K;
-        return data;
       }
-    } else {
-      return response.data as K;
+      var model = fromJsonFun(response.data) as K;
+      return model;
     }
   }
+
 }

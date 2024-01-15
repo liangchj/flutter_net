@@ -4,18 +4,16 @@ import 'network_connectivity.dart';
 import 'typedefs.dart';
 
 /// Handy method to make http GET request, which is a alias of  [dio.fetch(RequestOptions)].
-/// decodeType 为空返回原始数据
-Future<Result<K>> get<T, K>(
-  String path, {
-  Object? data,
-  Map<String, dynamic>? queryParameters,
-  Options? options,
-  CancelToken? cancelToken,
-  ProgressCallback? onReceiveProgress,
-  NetDecoder? httpDecode,
-  NetConverter<K>? converter,
-  T? decodeType,
-}) async {
+/// fromJsonFun 为空返回原始数据
+Future<Result<K>> get<T, K>(String path,
+    {Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onReceiveProgress,
+    NetDecoder? httpDecode,
+    NetConverter<K>? converter,
+    T? Function(dynamic)? fromJsonFun}) async {
   assert(!(httpDecode != null && converter != null),
       'httpDecode和converter不能同时赋值，请删除一个');
   return await _execute(
@@ -28,12 +26,12 @@ Future<Result<K>> get<T, K>(
     onReceiveProgress: onReceiveProgress,
     httpDecode: httpDecode,
     converter: converter,
-    decodeType: decodeType,
+    fromJsonFun: fromJsonFun,
   );
 }
 
 /// Handy method to make http POST request, which is a alias of  [dio.fetch(RequestOptions)].
-/// decodeType 为空返回原始数据
+/// fromJsonFun 为空返回原始数据
 Future<Result<K>> post<T, K>(
   String path, {
   Object? data,
@@ -44,7 +42,7 @@ Future<Result<K>> post<T, K>(
   ProgressCallback? onReceiveProgress,
   NetDecoder? httpDecode,
   NetConverter<K>? converter,
-  T? decodeType,
+  T? Function(dynamic)? fromJsonFun,
 }) async {
   assert(!(httpDecode != null && converter != null),
       'httpDecode和converter不能同时赋值，请删除一个');
@@ -59,12 +57,12 @@ Future<Result<K>> post<T, K>(
     onReceiveProgress: onReceiveProgress,
     httpDecode: httpDecode,
     converter: converter,
-    decodeType: decodeType,
+    fromJsonFun: fromJsonFun,
   );
 }
 
 /// Handy method to make http PUT request, which is a alias of  [dio.fetch(RequestOptions)].
-/// decodeType 为空返回原始数据
+/// fromJsonFun 为空返回原始数据
 Future<Result<K>> put<T, K>(
   String path, {
   Object? data,
@@ -75,7 +73,7 @@ Future<Result<K>> put<T, K>(
   ProgressCallback? onReceiveProgress,
   NetDecoder? httpDecode,
   NetConverter<K>? converter,
-  T? decodeType,
+  T? Function(dynamic)? fromJsonFun,
 }) async {
   assert(!(httpDecode != null && converter != null),
       'httpDecode和converter不能同时赋值，请删除一个');
@@ -90,12 +88,12 @@ Future<Result<K>> put<T, K>(
     onReceiveProgress: onReceiveProgress,
     httpDecode: httpDecode,
     converter: converter,
-    decodeType: decodeType,
+    fromJsonFun: fromJsonFun,
   );
 }
 
 /// Handy method to make http HEAD request, which is a alias of [dio.fetch(RequestOptions)].
-/// decodeType 为空返回原始数据
+/// fromJsonFun 为空返回原始数据
 Future<Result<K>> head<T, K>(
   String path, {
   Object? data,
@@ -104,7 +102,7 @@ Future<Result<K>> head<T, K>(
   CancelToken? cancelToken,
   NetDecoder? httpDecode,
   NetConverter<K>? converter,
-  T? decodeType,
+  T? Function(dynamic)? fromJsonFun,
 }) async {
   assert(!(httpDecode != null && converter != null),
       'httpDecode和converter不能同时赋值，请删除一个');
@@ -117,12 +115,12 @@ Future<Result<K>> head<T, K>(
     cancelToken: cancelToken,
     httpDecode: httpDecode,
     converter: converter,
-    decodeType: decodeType,
+    fromJsonFun: fromJsonFun,
   );
 }
 
 /// Handy method to make http DELETE request, which is a alias of  [dio.fetch(RequestOptions)].
-/// decodeType 为空返回原始数据
+/// fromJsonFun 为空返回原始数据
 Future<Result<K>> delete<T, K>(
   String path, {
   Object? data,
@@ -131,7 +129,7 @@ Future<Result<K>> delete<T, K>(
   CancelToken? cancelToken,
   NetDecoder? httpDecode,
   NetConverter<K>? converter,
-  T? decodeType,
+  T? Function(dynamic)? fromJsonFun,
 }) async {
   assert(!(httpDecode != null && converter != null),
       'httpDecode和converter不能同时赋值，请删除一个');
@@ -144,12 +142,12 @@ Future<Result<K>> delete<T, K>(
     cancelToken: cancelToken,
     httpDecode: httpDecode,
     converter: converter,
-    decodeType: decodeType,
+    fromJsonFun: fromJsonFun,
   );
 }
 
 /// Handy method to make http PATCH request, which is a alias of  [dio.fetch(RequestOptions)].
-/// decodeType 为空返回原始数据
+/// fromJsonFun 为空返回原始数据
 Future<Result<K>> patch<T, K>(
   String path, {
   Object? data,
@@ -160,7 +158,7 @@ Future<Result<K>> patch<T, K>(
   ProgressCallback? onReceiveProgress,
   NetDecoder? httpDecode,
   NetConverter<K>? converter,
-  T? decodeType,
+  T? Function(dynamic)? fromJsonFun,
 }) async {
   assert(!(httpDecode != null && converter != null),
       'httpDecode和converter不能同时赋值，请删除一个');
@@ -175,11 +173,11 @@ Future<Result<K>> patch<T, K>(
     onReceiveProgress: onReceiveProgress,
     httpDecode: httpDecode,
     converter: converter,
-    decodeType: decodeType,
+    fromJsonFun: fromJsonFun,
   );
 }
 
-/// {@template dio.Dio.download}
+/// @template dio.Dio.download
 Future<Response> download(
   String urlPath,
   dynamic savePath, {
@@ -223,7 +221,7 @@ Future<Result<K>> _execute<T, K>(
   ProgressCallback? onReceiveProgress,
   NetDecoder? httpDecode,
   NetConverter<K>? converter,
-  T? decodeType,
+  T? Function(dynamic)? fromJsonFun,
 }) async {
   if (!await NetworkConnectivity().connected) {
     return const Result.failure(msg: '网络未连接');
@@ -243,11 +241,11 @@ Future<Result<K>> _execute<T, K>(
     } else {
       var decode = await compute(
           _mapCompute<T, K>,
-          _MapBean<T>(response, decodeType,
+          _MapBean<T>(response, fromJsonFun,
               httpDecode ?? NetOptions.instance.httpDecoder));
       return Result.success(decode);
     }
-  } on DioError catch (e) {
+  } on DioException catch (e) {
     if (kDebugMode) print("$path => DioError${e.message}");
     return Result.failure(
         msg: e.message ?? '', code: e.response?.statusCode ?? -1);
@@ -269,14 +267,14 @@ Options _checkOptions(String method, Options? options) {
 /// A method to decode the response. use isolate
 K _mapCompute<T, K>(_MapBean<T> bean) {
   return bean.httpDecode
-      .decode(response: bean.response, decodeType: bean.decodeType);
+      .decode(response: bean.response, fromJsonFun: bean.fromJsonFun);
 }
 
 /// `_MapBean` is a class that is used to pass parameters to the isolate.
 class _MapBean<T> {
   final Response<dynamic> response;
-  final T? decodeType;
+  final T? Function(dynamic)? fromJsonFun;
   final NetDecoder httpDecode;
 
-  _MapBean(this.response, this.decodeType, this.httpDecode);
+  _MapBean(this.response, this.fromJsonFun, this.httpDecode);
 }

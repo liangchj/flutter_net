@@ -111,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// Get 请求数据，不带泛型
   void requestGet1() async {
-    var appResponse = await get("banner/json", decodeType: BannerModel());
+    var appResponse = await get("banner/json", fromJsonFun: BannerModel.fromJson);
     appResponse.when(success: (model) {
       var size = model.data?.length;
       debugPrint("不带泛型成功返回$size条");
@@ -123,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// Get 请求数据，完整的泛型
   void requestGet2() async {
     var appResponse = await get<BannerModel, BannerModel>("banner/json",
-        decodeType: BannerModel());
+        fromJsonFun: BannerModel.fromJson);
     appResponse.when(success: (model) {
       var size = model.data?.length;
       debugPrint("成功返回$size条");
@@ -136,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void requestPost() async {
     var appResponse = await post<UserWrapperModel, UserWrapperModel>(
         "user/login",
-        decodeType: UserWrapperModel(),
+        fromJsonFun: UserWrapperModel.fromJson,
         queryParameters: {"username": '你的账号', "password": '你的密码'});
     appResponse.when(success: (UserWrapperModel model) {
       var nickname = model.data?.nickname;
@@ -162,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var appResponse = await post<UserWrapperModel, UserWrapperModel>(
         "v1/task/task/headPortrait",
         options: Options(contentType: 'formData'),
-        decodeType: UserWrapperModel(),
+        fromJsonFun: UserWrapperModel.fromJson,
         data: params);
 
     appResponse.when(success: (UserWrapperModel model) {
@@ -176,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// 自定义Decoder的 Post 请求
   void requestCustomDecoderPost() async {
     var appResponse = await post<UserModel, UserModel>("user/login",
-        decodeType: UserModel(),
+        fromJsonFun: UserModel.fromJson,
         httpDecode: MyHttpDecoder.getInstance(),
         queryParameters: {"username": '', "password": ''});
     appResponse.when(success: (UserModel model) {
@@ -190,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// 自定义Decoder的 Get 请求
   void requestCustomGet() async {
     var appResponse = await get<BannerBean, List<BannerBean>>("banner/json",
-        decodeType: BannerBean(), httpDecode: MyHttpDecoder.getInstance());
+        fromJsonFun: BannerBean.fromJson, httpDecode: MyHttpDecoder.getInstance());
     appResponse.when(success: (List<BannerBean> model) {
       var size = model.length;
       debugPrint("成功返回$size条");
@@ -203,7 +203,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void requestCookieGet() async {
     var appResponse = await get<CollectModel, CollectModel>(
         "lg/collect/list/0/json",
-        decodeType: CollectModel(),
+        fromJsonFun: CollectModel.fromJson,
         httpDecode: MyHttpDecoder.getInstance());
     appResponse.when(success: (CollectModel model) {
       var size = model.datas?.length;
@@ -217,7 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void requestCacheGet() async {
     var appResponse = await get<BannerModel, BannerModel>("banner/json",
         options: buildCacheOptions(const Duration(days: 7)),
-        decodeType: BannerModel());
+        fromJsonFun: BannerModel.fromJson);
     appResponse.when(success: (BannerModel model) {
       var size = model.data?.length;
       debugPrint("成功返回$size条");
@@ -230,7 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void requestCallBack() async {
     var appResponse = await get<BannerModel, List<BannerBean>>("banner/json",
         options: buildCacheOptions(const Duration(days: 7)),
-        decodeType: BannerModel(), converter: (response) {
+        fromJsonFun: BannerModel.fromJson, converter: (response) {
       var errorCode = response.data['errorCode'];
 
       /// 请求成功

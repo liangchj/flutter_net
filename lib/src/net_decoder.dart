@@ -6,7 +6,7 @@ abstract class NetDecoder {
   ///  解码
   ///  [response] Response
   ///  [responseType] 解码类型
-  ///  [T] BaseNetworkModel的实现
+  ///  [T] BaseNetworkModel从json读取生成
   ///  [K] 返回类型
-  K decode<T, K>({required Response<dynamic> response,  T? decodeType});
+  K decode<T, K>({required Response<dynamic> response,  T? Function(dynamic)? fromJsonFun});
 }
